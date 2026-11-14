@@ -1,0 +1,20 @@
+src/api/uhdpaper.ts
+  h_3553f4e32d4a9f 14-19,68
+src/components/AppBar.vue
+  h_3553f4e32d4a9f 297,332-333,373-380
+src/store/actions/_util.ts
+  h_3553f4e32d4a9f 3,17-18
+src/store/actions/post.ts
+  h_3553f4e32d4a9f 1,47-59,72,93,97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "dee764c6a3551c66fac319466516e1e187999379",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
