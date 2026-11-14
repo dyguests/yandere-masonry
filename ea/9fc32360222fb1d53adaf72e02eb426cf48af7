@@ -1,0 +1,14 @@
+src/store/settings.ts
+  h_3553f4e32d4a9f 46,58-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "ea9fc32360222fb1d53adaf72e02eb426cf48af7",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
