@@ -1,0 +1,16 @@
+src/api/hentaibooru.ts
+  h_3553f4e32d4a9f 5-17,30
+src/components/PostDetail.vue
+  h_3553f4e32d4a9f 444,536-538
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "bad3865896a82545cda69ffb4c79b1e6a69795ce",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
