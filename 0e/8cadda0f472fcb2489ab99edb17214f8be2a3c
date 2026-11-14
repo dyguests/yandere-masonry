@@ -1,0 +1,22 @@
+header.config.js
+  h_3553f4e32d4a9f 44-46
+src/api/booru.ts
+  h_3553f4e32d4a9f 26,90
+src/api/index.ts
+  h_3553f4e32d4a9f 16
+src/api/uhdpaper.ts
+  h_3553f4e32d4a9f 1-80
+src/store/actions/site.ts
+  h_3553f4e32d4a9f 18,50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "0e8cadda0f472fcb2489ab99edb17214f8be2a3c",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
