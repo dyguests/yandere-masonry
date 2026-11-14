@@ -1,0 +1,14 @@
+dist/yandere-masonry.user.js
+  h_3553f4e32d4a9f 880,973
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "b656ed3859e15c939aece82b51ad2f2d0e1772bc",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
