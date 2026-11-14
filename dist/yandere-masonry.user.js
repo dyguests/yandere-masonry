@@ -877,6 +877,7 @@ var __publicField = (obj, key, value) => {
       );
     }
   });
+  Vue__default["default"].util.warn;
   function tryOnScopeDispose(fn) {
     if (Vue2.getCurrentScope()) {
       Vue2.onScopeDispose(fn);
@@ -969,7 +970,7 @@ var __publicField = (obj, key, value) => {
     if (instance) {
       Vue2.onMounted(() => {
         isMounted.value = true;
-      }, instance);
+      }, void 0);
     }
     return isMounted;
   }
