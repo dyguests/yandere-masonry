@@ -38,6 +38,8 @@
 // @match                https://anihonetwallpaper.com/*
 // @match                https://nozomi.la/*
 // @match                https://rule34hentai.net/*
+// @match                https://www.uhdpaper.com/*
+// @match                https://uhdpaper.com/*
 // @homepage             https://www.nanoka.top
 // @source               https://github.com/asadahimeka/yandere-masonry
 // @icon                 https://upload-bbs.mihoyo.com/upload/2022/05/23/260511332/f1f6267537a5aff959ee63ec2c9e4e52_4821140735490026106.jpg
@@ -875,7 +877,6 @@ var __publicField = (obj, key, value) => {
       );
     }
   });
-  Vue__default["default"].util.warn;
   function tryOnScopeDispose(fn) {
     if (Vue2.getCurrentScope()) {
       Vue2.onScopeDispose(fn);
@@ -968,7 +969,7 @@ var __publicField = (obj, key, value) => {
     if (instance) {
       Vue2.onMounted(() => {
         isMounted.value = true;
-      }, void 0);
+      }, instance);
     }
     return isMounted;
   }
@@ -7012,7 +7013,8 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     "anihonetwallpaper.com",
     "nozomi.la",
     "realbooru.com",
-    "rule34hentai.net"
+    "rule34hentai.net",
+    "www.uhdpaper.com"
   ];
   const isSupportTagSearch = isBooruSite() || !["nozomi.la"].includes(location.host);
   const notPartialSupportSite = ![
@@ -7069,7 +7071,8 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     "anime-pictures.net": "Anime Pictures",
     "allgirl.booru.org": "All girl",
     "booru.eu": "Hentai Booru",
-    "rule34hentai.net": "Rule34Hentai"
+    "rule34hentai.net": "Rule34Hentai",
+    "uhdpaper.com": "UHDPaper"
   };
   function getSiteTitle(domain2 = location.host) {
     const host = domain2.toLowerCase().replace("www.", "");
@@ -8066,6 +8069,78 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     is: isRule34HentaiPage,
     posts: fetchRule34HentaiPosts
   };
+  const ORIGIN = "https://www.uhdpaper.com";
+  function isUhdpaperPage() {
+    return location.hostname === "uhdpaper.com" || location.hostname.endsWith(".uhdpaper.com");
+  }
+  let nextPageHref = null;
+  let seenIds = /* @__PURE__ */ new Set();
+  let started = false;
+  function uhdpaperSearchUrl(tags) {
+    const q = tags.trim().split(/\s+/).map(encodeURIComponent).join("+");
+    return `${ORIGIN}/search?q=${q}&by-date=true&i=0`;
+  }
+  function thumbToOriginal(url) {
+    return url.split(/[?#]/)[0].replace(/-thumb\.(jpe?g|png|webp)$/i, "");
+  }
+  async function parseCard(el) {
+    const a = el.querySelector("a[href]");
+    const img = el.querySelector("img[src]");
+    if (!a?.href || !img)
+      return null;
+    const id = new URL(a.href, ORIGIN).pathname.split("/").pop()?.replace(/\.html?$/, "") || "";
+    if (!id || seenIds.has(id))
+      return null;
+    const tags = [...new Set(
+      (a.getAttribute("aria-label") || "").split(",").map((tag2) => tag2.trim()).filter((tag2) => tag2 && !tag2.startsWith("#") && !/^wallpaper$/i.test(tag2))
+    )];
+    const previewUrl = new URL(img.getAttribute("src") || "", ORIGIN).href;
+    const fileUrl = thumbToOriginal(previewUrl);
+    if (!fileUrl)
+      return null;
+    seenIds.add(id);
+    let { width, height } = await getImageSize(previewUrl);
+    if (!width || !height) {
+      width = 16;
+      height = 9;
+    }
+    return {
+      id,
+      postView: a.href,
+      previewUrl,
+      sampleUrl: `${fileUrl}-pc-2k.jpg`,
+      fileUrl,
+      tags,
+      width,
+      height,
+      aspectRatio: width / height,
+      fileExt: "jpg",
+      fileDownloadName: `uhdpaper ${id}.jpg`,
+      rating: "s"
+    };
+  }
+  async function fetchUhdpaperPosts(page, tags) {
+    if (!started || page <= 1) {
+      started = true;
+      seenIds = /* @__PURE__ */ new Set();
+      const url = new URL(location.href);
+      url.searchParams.delete("page");
+      nextPageHref = tags ? uhdpaperSearchUrl(tags) : url.href;
+    }
+    if (!nextPageHref)
+      return [];
+    const resp = await fetch(nextPageHref);
+    const doc = new DOMParser().parseFromString(await resp.text(), "text/html");
+    const pager = doc.querySelector("a.blog-pager-older-link");
+    nextPageHref = pager?.getAttribute("href") ? new URL(pager.getAttribute("href"), ORIGIN).href : null;
+    const cards = [...doc.querySelectorAll("article.post-outer-container")];
+    const results = await Promise.all(cards.map((el) => parseCard(el)));
+    return results.filter(Boolean);
+  }
+  const uhdpaper = {
+    is: isUhdpaperPage,
+    posts: fetchUhdpaperPosts
+  };
   function isZerochanPage() {
     return location.hostname == "www.zerochan.net";
   }
@@ -8144,6 +8219,7 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     sankaku.complex,
     realbooru,
     rule34hentai,
+    uhdpaper,
     { is: () => true, posts: async () => [] }
   ];
   const fetchDetailActions = [
@@ -8164,6 +8240,8 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
   }
   function pushPageState(pageNo, latePageQuery = false) {
     if (rule34.fav.is() || allgirl.is() || nozomila.is())
+      return;
+    if (uhdpaper.is())
       return;
     let pageParamName = "page";
     if (isPidSite()) {
@@ -8230,6 +8308,19 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     const doch = document.documentElement.clientHeight;
     return cnth ? Math.floor(doch / cnth) : 1;
   };
+  const fillViewport = async () => {
+    if (settings.masonryLayout === "virtual")
+      return;
+    for (let i = 0; i < 3; i++) {
+      await Vue2.nextTick();
+      const doc = document.documentElement;
+      if (doc.scrollHeight > doc.clientHeight + 1)
+        return;
+      if (store.requestStop)
+        return;
+      await searchPosts(true);
+    }
+  };
   const initPosts = async () => {
     await searchPosts(true);
     if (settings.masonryLayout === "virtual") {
@@ -8245,6 +8336,7 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     for (let index = 1; index < times; index++) {
       await searchPosts(true);
     }
+    await fillViewport();
   };
   const refreshPosts = () => {
     setPage(1);
@@ -8262,10 +8354,11 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     setPage(1);
     setTags(searchTerm);
     store.imageList = [];
-    searchPosts().then(() => {
+    searchPosts().then(async () => {
       if (settings.masonryLayout === "virtual") {
         document.documentElement.scrollTop = 1;
       }
+      await fillViewport();
     });
   };
   async function fetchDanbooruAutocomplete(term) {
@@ -8383,7 +8476,8 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
           return e.id !== id;
         });
       }
-      const tagsQuery = new URLSearchParams(location.search).get("tags");
+      const searchParams = new URLSearchParams(location.search);
+      const tagsQuery = searchParams.get("tags") || (uhdpaper.is() ? searchParams.get("q") : null);
       const searchState = Vue2.reactive({
         showInput: !!tagsQuery,
         showMenu: false,
@@ -8421,9 +8515,13 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
         }
       });
       function fetchTaggedPosts(tags) {
-        const url = new URL(location.href);
-        url.searchParams.set("tags", tags);
-        history.pushState("", "", url);
+        if (uhdpaper.is()) {
+          history.pushState("", "", uhdpaperSearchUrl(tags));
+        } else {
+          const url = new URL(location.href);
+          url.searchParams.set("tags", tags);
+          history.pushState("", "", url);
+        }
         searchState.searchTerm = tags;
         loadPostsByTags(tags);
       }
@@ -8674,7 +8772,7 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
           store.isFullscreen = !!document.fullscreenElement;
         });
       });
-      return { __sfc: true, title, isNoSelected, isOneOrMoreSelected, isAllSelected, loadingValue, selectAll, removeFromList, tagsQuery, searchState, onSearchTermInput, selectTag, userName, fetchTaggedPosts, showTagsInput, onSearchTermKeydown, showPopAction, periodMap, periodByDateMap, getRecentPeriod, isPopularRecent, getPopTitle, popTitle, isPopSearchByDate, recentPeriod, periodComputedMap, showPopDatePicker, popSearchDate, fetchPopularPosts, selPeriod, loadPrevPeriod, loadNextPeriod, goToPopularPage, showPool, poolQueryTerm, searchPool, download, hasSampleDownload, downloadSourceOptions, showDownloadSourceSwitch, downloadUrlKey, getItemDownloadUrl, isGelbooru, startDownload, isExportUrlDecode, isExportUrlEncode, exportFileUrls, vuetify, toggleDarkmode, keyActions, goToPage, exitMasonry, toggleFullscreen, selectLang, mdiBrightness6, mdiCalendar, mdiCalendarSearch, mdiCheckUnderlineCircle, mdiCheckboxBlankOutline, mdiCheckboxIntermediate, mdiCheckboxMarked, mdiChevronLeft, mdiChevronRight, mdiCog, mdiDelete, mdiDownload, mdiFileClockOutline, mdiFire, mdiFullscreen, mdiFullscreenExit, mdiHome, mdiImageMultiple, mdiLocationExit, mdiMagnify, mdiShuffle, mdiStar, mdiTranslate, settings, store, toggleDrawer, langList, isSupportTagSearch, notPartialSupportSite, isSankakuSite, isZerochanPage };
+      return { __sfc: true, title, isNoSelected, isOneOrMoreSelected, isAllSelected, loadingValue, selectAll, removeFromList, searchParams, tagsQuery, searchState, onSearchTermInput, selectTag, userName, fetchTaggedPosts, showTagsInput, onSearchTermKeydown, showPopAction, periodMap, periodByDateMap, getRecentPeriod, isPopularRecent, getPopTitle, popTitle, isPopSearchByDate, recentPeriod, periodComputedMap, showPopDatePicker, popSearchDate, fetchPopularPosts, selPeriod, loadPrevPeriod, loadNextPeriod, goToPopularPage, showPool, poolQueryTerm, searchPool, download, hasSampleDownload, downloadSourceOptions, showDownloadSourceSwitch, downloadUrlKey, getItemDownloadUrl, isGelbooru, startDownload, isExportUrlDecode, isExportUrlEncode, exportFileUrls, vuetify, toggleDarkmode, keyActions, goToPage, exitMasonry, toggleFullscreen, selectLang, mdiBrightness6, mdiCalendar, mdiCalendarSearch, mdiCheckUnderlineCircle, mdiCheckboxBlankOutline, mdiCheckboxIntermediate, mdiCheckboxMarked, mdiChevronLeft, mdiChevronRight, mdiCog, mdiDelete, mdiDownload, mdiFileClockOutline, mdiFire, mdiFullscreen, mdiFullscreenExit, mdiHome, mdiImageMultiple, mdiLocationExit, mdiMagnify, mdiShuffle, mdiStar, mdiTranslate, settings, store, toggleDrawer, langList, isSupportTagSearch, notPartialSupportSite, isSankakuSite, isZerochanPage };
     }
   });
   var _sfc_render$a = function render() {
@@ -9498,6 +9596,9 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
         }
         if (isDanbooruPage()) {
           window.open(`/posts?tags=${tag2}`, "_blank", "noreferrer");
+        }
+        if (uhdpaper.is()) {
+          window.open(`${uhdpaperSearchUrl(tag2)}&_wf=1`, "_blank", "noreferrer");
         }
       }
       function toPidPage(pid) {
