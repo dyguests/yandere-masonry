@@ -7354,6 +7354,12 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
   function isHentaiBooruPage() {
     return location.hostname == "booru.eu";
   }
+  function tagsToPath(tags) {
+    return tags.trim().split(/\s+/).map((tag2) => encodeURIComponent(tag2.replace(/\//g, "^s"))).join("+");
+  }
+  function hentaibooruSearchUrl(tag2) {
+    return `https://booru.eu/post/list/${tagsToPath(tag2)}/1?_wf=1&tags=${encodeURIComponent(tag2)}`;
+  }
   async function fetchHentaiBooruPosts(page, tags) {
     document.onclick = function() {
     };
@@ -7370,7 +7376,7 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
       a.rel = "noreferrer";
       a.click();
     };
-    const url = `https://booru.eu/post/list${tags ? `/${tags}` : ""}/${page}`;
+    const url = `https://booru.eu/post/list${tags ? `/${tagsToPath(tags)}` : ""}/${page}`;
     const htmlResp = await fetch(url);
     const doc = new DOMParser().parseFromString(await htmlResp.text(), "text/html");
     const results = [...doc.querySelectorAll(".shm-image-list span.thumb")].map((el) => {
@@ -9627,6 +9633,9 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
         }
         if (uhdpaper.is()) {
           window.open(`${uhdpaperSearchUrl(tag2)}&_wf=1`, "_blank", "noreferrer");
+        }
+        if (hentaibooru.is()) {
+          window.open(hentaibooruSearchUrl(tag2), "_blank", "noreferrer");
         }
       }
       function toPidPage(pid) {
