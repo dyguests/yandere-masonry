@@ -1,0 +1,14 @@
+src/components/PostDetail.vue
+  h_3553f4e32d4a9f 275-276,440,552-564
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "4d747534e9fc028b9dcb4030d20466472f81a40f",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
