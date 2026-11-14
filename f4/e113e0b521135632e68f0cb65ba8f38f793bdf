@@ -1,0 +1,16 @@
+dist/yandere-masonry.user.js
+  h_3553f4e32d4a9f 9619-9628,9891,9971-9975
+src/components/PostDetail.vue
+  h_3553f4e32d4a9f 275-276,440,552-564
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "f4e113e0b521135632e68f0cb65ba8f38f793bdf",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
