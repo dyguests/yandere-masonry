@@ -1,0 +1,18 @@
+dist/yandere-masonry.user.js
+  h_3553f4e32d4a9f 7357-7362,7379,9637-9639
+src/api/hentaibooru.ts
+  h_3553f4e32d4a9f 5-17,30
+src/components/PostDetail.vue
+  h_3553f4e32d4a9f 444,536-538
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "4207634a19e48f4ec8db68d241e0bcfc9b2c03aa",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
