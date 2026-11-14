@@ -9536,7 +9536,11 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
       postDetail.value = eshuushuu.tagDetail(imageSelected.value);
       return;
     }
-    await handlePostDetail(imageSelected);
+    try {
+      await handlePostDetail(imageSelected);
+    } catch (error) {
+      console.log("handlePostDetail error:", error);
+    }
     postDetail.value = {
       voted: false,
       tags: imageSelected.value.tags.map((tag2) => {
