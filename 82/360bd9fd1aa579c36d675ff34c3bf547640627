@@ -1,0 +1,20 @@
+dist/yandere-masonry.user.js
+  h_3553f4e32d4a9f 8080,8104,8143-8159,8162-8163,8247,9510,9513-9514
+src/api/uhdpaper.ts
+  h_3553f4e32d4a9f 13-14,48,95-116,120
+src/store/actions/detail.ts
+  h_3553f4e32d4a9f 13,17
+src/store/actions/site.ts
+  h_3553f4e32d4a9f 56,60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "82360bd9fd1aa579c36d675ff34c3bf547640627",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
