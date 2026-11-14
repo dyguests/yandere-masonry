@@ -1,0 +1,14 @@
+src/api/uhdpaper.ts
+  h_3553f4e32d4a9f 50-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "b3c96147265644a3c4c7bca2f45e2da7caf8b2af",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
