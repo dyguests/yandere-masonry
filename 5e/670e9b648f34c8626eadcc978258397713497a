@@ -1,0 +1,19 @@
+src/api/uhdpaper.ts
+  s_c7e1943da711e6::t_99014940687faa 33-40,61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "5e670e9b648f34c8626eadcc978258397713497a",
+  "prompts": {},
+  "sessions": {
+    "s_c7e1943da711e6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1d7ab-ab07-7a01-a0af-62b822aa9a0f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
