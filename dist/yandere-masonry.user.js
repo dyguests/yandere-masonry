@@ -8077,6 +8077,7 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
   let nextPageHref = null;
   let seenIds = /* @__PURE__ */ new Set();
   let started = false;
+  const postHrefById = /* @__PURE__ */ new Map();
   function uhdpaperSearchUrl(tags) {
     const q = tags.trim().split(/\s+/).map(encodeURIComponent).join("+");
     return `${ORIGIN}/search?q=${q}&by-date=true&i=0`;
@@ -8100,6 +8101,7 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     if (!fileUrl)
       return null;
     seenIds.add(id);
+    postHrefById.set(id, a.href);
     let { width, height } = await getImageSize(previewUrl);
     if (!width || !height) {
       width = 16;
@@ -8138,9 +8140,27 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     const results = await Promise.all(cards.map((el) => parseCard(el)));
     return results.filter(Boolean);
   }
+  async function fetchUhdpaperDetail(id) {
+    const href = postHrefById.get(id);
+    if (!href)
+      return {};
+    const resp = await fetch(href);
+    if (!resp.ok)
+      return {};
+    const doc = new DOMParser().parseFromString(await resp.text(), "text/html");
+    const meta = doc.querySelector("#post_tmp");
+    if (!meta)
+      return {};
+    const tags = [...new Set(
+      (meta.querySelector("h2")?.textContent || "").split(",").map((tag2) => tag2.trim()).filter((tag2) => tag2 && !tag2.startsWith("#") && !/^wallpaper$/i.test(tag2))
+    )];
+    const source = meta.querySelector("a")?.getAttribute("href") || "";
+    return { tags, source };
+  }
   const uhdpaper = {
     is: isUhdpaperPage,
-    posts: fetchUhdpaperPosts
+    posts: fetchUhdpaperPosts,
+    detail: fetchUhdpaperDetail
   };
   function isZerochanPage() {
     return location.hostname == "www.zerochan.net";
@@ -8224,6 +8244,7 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
     { is: () => true, posts: async () => [] }
   ];
   const fetchDetailActions = [
+    uhdpaper,
     animepictures,
     sankaku.idol,
     sankaku,
@@ -9486,9 +9507,11 @@ Make sure you have modified Tampermonkey's "Download Mode" to "Browser API".`;
   });
   const isCNLang = i18n.locale.includes("zh");
   async function handlePostDetail(img) {
-    const { fileUrl, sampleUrl, tags } = await fetchDetailActions.find((e) => e.is())?.detail(img.value.id) || {};
+    const { fileUrl, sampleUrl, tags, source } = await fetchDetailActions.find((e) => e.is())?.detail(img.value.id) || {};
     if (tags?.length)
       img.value.tags = tags;
+    if (source)
+      img.value.source = source;
     if (fileUrl)
       img.value.fileUrl = fileUrl;
     if (sampleUrl)
