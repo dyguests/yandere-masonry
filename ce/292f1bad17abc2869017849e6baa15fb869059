@@ -1,0 +1,18 @@
+src/api/uhdpaper.ts
+  h_3553f4e32d4a9f 13-14,48,95-116,120
+src/store/actions/detail.ts
+  h_3553f4e32d4a9f 13,17
+src/store/actions/site.ts
+  h_3553f4e32d4a9f 56,60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "ce292f1bad17abc2869017849e6baa15fb869059",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
