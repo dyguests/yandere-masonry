@@ -1,0 +1,16 @@
+src/components/AppBar.vue
+  h_3553f4e32d4a9f 2,298,654-670,675-680
+src/styles/custom.css
+  h_3553f4e32d4a9f 747-765
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "2dcde43f32b0a3341383b2341e54b4ffaa922b58",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
