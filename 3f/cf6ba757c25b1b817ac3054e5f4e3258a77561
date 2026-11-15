@@ -1,0 +1,14 @@
+src/styles/custom.css
+  h_3553f4e32d4a9f 298-303
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "3fcf6ba757c25b1b817ac3054e5f4e3258a77561",
+  "prompts": {},
+  "humans": {
+    "h_3553f4e32d4a9f": {
+      "author": "fanhl <dyguests@qq.com>"
+    }
+  }
+}
